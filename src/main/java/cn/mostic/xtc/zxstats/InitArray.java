@@ -1,5 +1,7 @@
 package cn.mostic.xtc.zxstats;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.*;
 
 /**
@@ -7,6 +9,7 @@ import java.util.*;
  * Created by LIQing
  * 2017/11/19 17:19
  */
+@Slf4j
 public class InitArray {
 
     public static Map<String, ResutlData> getArray(Set<String> dateSet, int zxAmount) {
@@ -31,6 +34,7 @@ public class InitArray {
             }
         }
 
+        log.info("初始化结果数组完成！");
         return resutlDataMap;
     }
 

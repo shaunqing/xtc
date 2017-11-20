@@ -35,4 +35,14 @@ public class ResutlData {
         // 根据date hour province生成md5
         this.indexMD5 = DigestUtils.md5Hex(date + hour + province);
     }
+
+    @Override
+    public String toString() {
+        return "ResutlData{" +
+                "date='" + date + '\'' +
+                ", hour=" + hour +
+                ", province='" + province + '\'' +
+                ", total=" + total +
+                '}';
+    }
 }

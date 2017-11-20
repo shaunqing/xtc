@@ -10,8 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,11 +90,10 @@ public class ExcelUtil {
      * 保存Excel文件
      *
      * @param workbook  需保存的工作簿
-     * @param savePath  保存的路径（D:/files）
      * @param excelName Excel文件名（程序自动添加时间戳）
      * @return 文件名称
      */
-    public static String write(Workbook workbook, String savePath, String excelName) {
+    public static String write(Workbook workbook, String excelName) {
         // 添加时间戳
         SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd_HHmmss");
         excelName = excelName + "_" + sf.format(new Date());
@@ -111,8 +109,8 @@ public class ExcelUtil {
         FileOutputStream fileOut = null;
 
         try {
-            makeRootFolder(savePath);
-            fileOut = new FileOutputStream(savePath + File.separator + excelName);
+            // makeRootFolder(savePath);
+            fileOut = new FileOutputStream(excelName);
             workbook.write(fileOut);
             return excelName;
         } catch (IOException e) {
@@ -146,5 +144,69 @@ public class ExcelUtil {
         if (!rootFolder.exists() || !rootFolder.isDirectory()) {
             rootFolder.mkdirs();
         }
+    }
+
+    /**
+     * 创建sheet页
+     *
+     * @param workbook
+     * @param sheetName
+     * @param header
+     * @return
+     */
+    public static Sheet createSheet(Workbook workbook, String sheetName, List<String> header) {
+        Sheet sheet = null;
+        if (sheetName == null || "".equals(sheetName)) {
+            sheet = workbook.createSheet();
+        } else {
+            sheet = workbook.createSheet(sheetName);
+        }
+        generateHeader(workbook, sheet, header);
+        return sheet;
+    }
+
+    /**
+     * 生成Excel表头
+     *
+     * @param workbook
+     * @param sheet
+     * @param header
+     */
+    public static void generateHeader(Workbook workbook, Sheet sheet, List<String> header) {
+        CellStyle style = getCellStyle(workbook, true);
+        Row row = sheet.createRow(0);
+        row.setHeight((short) 500); // 设置行高
+        int size = header.size();
+        for (int i = 0; i < size; i++) {
+            Cell cell = row.createCell(i);
+            cell.setCellValue(header.get(i));
+            cell.setCellStyle(style);
+        }
+    }
+
+    /**
+     * 设置单元格格式
+     *
+     * @param workbook
+     * @param isHeader
+     * @return
+     */
+    public static CellStyle getCellStyle(Workbook workbook, boolean isHeader) {
+        CellStyle style = workbook.createCellStyle();
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
+        style.setBorderTop(BorderStyle.THIN);
+        style.setLocked(true);
+        style.setAlignment(HorizontalAlignment.CENTER); // 水平居中
+        style.setVerticalAlignment(VerticalAlignment.CENTER);// 垂直居中
+        if (isHeader) {
+            style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
+            Font font = workbook.createFont();
+            font.setColor(IndexedColors.BLACK.index);
+            font.setFontHeightInPoints((short) 12);
+            style.setFont(font);
+        }
+        return style;
     }
 }

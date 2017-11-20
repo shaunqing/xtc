@@ -40,22 +40,21 @@ public class ReadFile {
     }
 
     /**
-     * 读取专项文件
+     * 获取专项，序号从0开始
      *
-     * @param url
      * @return
      */
-    public static Map<String, Integer> readZx(String url) {
+    public static Map<String, Integer> readZx() {
         Map<String, Integer> map = new HashMap<>();
 
-        File file = new File(url);
+        String zxFilePath = "zx.txt";
+        File file = new File(zxFilePath);
         try {
             //构造一个BufferedReader类来读取文件
             BufferedReader br = new BufferedReader(new FileReader(file));
             String s = null;
             //使用readLine方法，一次读一行
             while ((s = br.readLine()) != null) {
-                System.out.println(s);
                 String[] values = s.split(" ");
                 map.put(values[0], Integer.valueOf(values[1]));
             }
@@ -65,16 +64,4 @@ public class ReadFile {
         }
         return map;
     }
-
-    public static void main(String[] args) {
-        Map<String, Integer> map = ReadFile.readZx("zx.txt");
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            System.out.println("key= " + entry.getKey() + " and value= " + entry.getValue());
-        }
-
-
-        System.out.println(map.containsValue(Integer.valueOf(1)));
-
-    }
-
 }
